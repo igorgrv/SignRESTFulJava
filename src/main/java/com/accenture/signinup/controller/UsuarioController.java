@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,11 +37,11 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	@RequestMapping("/")
-	public String helloWorld() {
-		return "hello";
+	@GetMapping("/health")
+	public String health() {
+		return LocalDateTime.now().toString();
 	}
-
+	
 	@GetMapping("/usuarios")
 	public List<UsuarioDTO> list() {
 		return UsuarioDTO.toUsuario(usuarioRepository.findAll());
@@ -71,7 +70,7 @@ public class UsuarioController {
 			return ResponseEntity.badRequest().body(errorDTO);
 		}
 
-		String senhaEncoded = new BCryptPasswordEncoder().encode(usuario.getPassword());
+		String senhaEncoded = new BCryptPasswordEncoder().encode(usuario.getSenha());
 		usuario.setSenha(senhaEncoded);
 		usuario.setDataCriacao(LocalDateTime.now());
 		usuario.setDataUltimoLogin(LocalDateTime.now());
