@@ -25,7 +25,7 @@ public class TokenService {
 		Usuario user = (Usuario) authentication.getPrincipal();
 
 		return Jwts.builder()
-				.setIssuer("Igor - ForumAPI")
+				.setIssuer("Igor - Accenture")
 				.setSubject(user.getId().toString())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(new Date().getTime() + Long.parseLong(experation)))
