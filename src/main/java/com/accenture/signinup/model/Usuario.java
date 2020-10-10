@@ -1,6 +1,7 @@
 package com.accenture.signinup.model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,11 +45,11 @@ public class Usuario implements UserDetails {
 	private String senha;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<Telefone> telefones = new ArrayList<Telefone>();
+	private List<Telefone> telefones = new ArrayList<>();
 
-	private LocalDateTime dataCriacao = LocalDateTime.now();
-	private LocalDateTime dataAtualizacao;
-	private LocalDateTime dataUltimoLogin = LocalDateTime.now();
+	private LocalDateTime dataCriacao;
+	private LocalDateTime dataAtualizacao = LocalDateTime.now();
+	private LocalDateTime dataUltimoLogin;
 
 	public Usuario() {
 	}
@@ -123,6 +124,12 @@ public class Usuario implements UserDetails {
 
 	public void setDataUltimoLogin(LocalDateTime dataUltimoLogin) {
 		this.dataUltimoLogin = dataUltimoLogin;
+	}
+	
+	public boolean tokenPassouTrintaMinutos() {
+		LocalDateTime ultimoLogin = this.getDataUltimoLogin();
+		long minutos = ultimoLogin.until(LocalDateTime.now(), ChronoUnit.MINUTES);
+		return minutos < 30;
 	}
 
 	@Override

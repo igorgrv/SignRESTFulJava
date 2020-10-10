@@ -1,6 +1,7 @@
 package com.accenture.signinup.controller;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +32,6 @@ import com.accenture.signinup.repository.UsuarioRepository;
 @RestController
 public class UsuarioController {
 
-
 	@Autowired
 	private AuthenticationManager authManager;
 
@@ -51,9 +52,12 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/usuarios/{id}")
-	public ResponseEntity<UsuarioDTO> getUsuario(@PathVariable Long id) {
+	public ResponseEntity<Object> getUsuario(@PathVariable Long id) {
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		if (usuario.isPresent()) {
+			if(!usuario.get().tokenPassouTrintaMinutos()) {
+				return new ResponseEntity<>("Sessão Invalida", HttpStatus.BAD_REQUEST);
+			}
 			return ResponseEntity.ok(new UsuarioDTO(usuario.get()));
 		}
 		return ResponseEntity.notFound().build();
@@ -69,15 +73,17 @@ public class UsuarioController {
 			errorDTO.setMensagem("E-mail já existente");
 			return ResponseEntity.badRequest().body(errorDTO);
 		}
-		
+
 		String senhaEncoded = new BCryptPasswordEncoder().encode(usuario.getPassword());
 		usuario.setSenha(senhaEncoded);
+		usuario.setDataCriacao(LocalDateTime.now());
+		usuario.setDataUltimoLogin(LocalDateTime.now());
 		usuarioRepository.save(usuario);
 
 		URI uri = uriBuilder.path("/signup/{id}").buildAndExpand(usuario.getId()).toUri();
 		return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));
 	}
-	
+
 	@PostMapping("/signin")
 	@Transactional
 	public ResponseEntity<Object> signin(@RequestBody @Valid UsuarioForm form, UriComponentsBuilder uriBuilder) {
@@ -86,13 +92,15 @@ public class UsuarioController {
 
 		try {
 			authManager.authenticate(login);
-			Usuario usuario = usuarioRepository.findByEmail(form.getEmail()).get();
-
-			return ResponseEntity.ok(new UsuarioDTO(usuario));
+			Optional<Usuario> usuario = usuarioRepository.findByEmail(form.getEmail());
+			if(usuario.isPresent()) {
+				usuario.get().setDataUltimoLogin(LocalDateTime.now());				
+				return ResponseEntity.ok(new UsuarioDTO(usuario.get()));
+			}
+			return new ResponseEntity<>("Usuario e/ou senha ínválidos", HttpStatus.UNAUTHORIZED);
 		} catch (AuthenticationException e) {
-			return ResponseEntity.badRequest().build();
+			return new ResponseEntity<>("Usuario e/ou senha ínválidos", HttpStatus.UNAUTHORIZED);
 		}
 	}
-
 
 }

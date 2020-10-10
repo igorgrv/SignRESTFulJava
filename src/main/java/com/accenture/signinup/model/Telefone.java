@@ -12,7 +12,8 @@ import org.hibernate.validator.constraints.Length;
 import com.sun.istack.NotNull;
 
 @Entity
-public class Telefone {
+public class Telefone{
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
