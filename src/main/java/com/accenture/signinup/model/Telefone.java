@@ -43,6 +43,10 @@ public class Telefone {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Telefone [id=" + id + ", numero=" + numero + ", ddd=" + ddd + ", usuario=" + usuario + "]";
+	}
 	
 }

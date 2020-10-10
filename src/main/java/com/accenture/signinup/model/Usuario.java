@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +23,7 @@ public class Usuario {
 	private LocalDateTime dataCriacao = LocalDateTime.now();
 	private LocalDateTime dataAtualizacao;
 	private LocalDateTime dataUltimoLogin = LocalDateTime.now();
-	@OneToMany(mappedBy = "usuario")
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Telefone> telefones = new ArrayList<Telefone>();
 	
 	public Usuario() {}
@@ -87,6 +88,13 @@ public class Usuario {
 
 	public void setDataUltimoLogin(LocalDateTime dataUltimoLogin) {
 		this.dataUltimoLogin = dataUltimoLogin;
+	}
+
+	@Override
+	public String toString() {
+		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", dataCriacao="
+				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", dataUltimoLogin=" + dataUltimoLogin
+				+ ", telefones=" + telefones + "]";
 	}
 	
 }
