@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,18 +44,15 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/usuarios")
-	public List<UsuarioDTO> list(Long user_id) {
-		if (user_id == null) {
-			return UsuarioDTO.toUsuario(usuarioRepository.findAll());
-		}
-		return UsuarioDTO.toUsuario(usuarioRepository.getByUsuarioId(user_id));
+	public List<UsuarioDTO> list() {
+		return UsuarioDTO.toUsuario(usuarioRepository.findAll());
 	}
 
 	@GetMapping("/usuarios/{id}")
-	public ResponseEntity<Object> getUsuario(@PathVariable Long id) {
+	public ResponseEntity<Object> getUsuario(@PathVariable String id) {
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		if (usuario.isPresent()) {
-			if(!usuario.get().tokenPassouTrintaMinutos()) {
+			if (!usuario.get().tokenPassouTrintaMinutos()) {
 				return new ResponseEntity<>("Sessão Invalida", HttpStatus.BAD_REQUEST);
 			}
 			return ResponseEntity.ok(new UsuarioDTO(usuario.get()));
@@ -93,8 +90,8 @@ public class UsuarioController {
 		try {
 			authManager.authenticate(login);
 			Optional<Usuario> usuario = usuarioRepository.findByEmail(form.getEmail());
-			if(usuario.isPresent()) {
-				usuario.get().setDataUltimoLogin(LocalDateTime.now());				
+			if (usuario.isPresent()) {
+				usuario.get().setDataUltimoLogin(LocalDateTime.now());
 				return ResponseEntity.ok(new UsuarioDTO(usuario.get()));
 			}
 			return new ResponseEntity<>("Usuario e/ou senha ínválidos", HttpStatus.UNAUTHORIZED);

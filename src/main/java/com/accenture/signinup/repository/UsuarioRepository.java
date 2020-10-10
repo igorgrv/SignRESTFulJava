@@ -1,18 +1,12 @@
 package com.accenture.signinup.repository;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.accenture.signinup.model.Usuario;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
+public interface UsuarioRepository extends MongoRepository<Usuario, String>{
 
-	@Query("SELECT u FROM Usuario u WHERE u.id = :user_id")
-	List<Usuario> getByUsuarioId(@Param("user_id") Long user_id);
-	
 	Optional<Usuario> findByEmail(String email);
 }
