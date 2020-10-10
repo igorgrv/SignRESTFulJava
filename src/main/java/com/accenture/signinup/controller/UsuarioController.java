@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +40,10 @@ public class UsuarioController {
 	
 	@PostMapping("/signup")
 	@Transactional
-	public ResponseEntity<UsuarioDTO> save(@RequestBody Usuario usuario, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<UsuarioDTO> save(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriBuilder) {
 		usuarioRepository.save(usuario);
 		
 		URI uri = uriBuilder.path("/signup/{id}").buildAndExpand(usuario.getId()).toUri();
-		
 		return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));
 	}
 	

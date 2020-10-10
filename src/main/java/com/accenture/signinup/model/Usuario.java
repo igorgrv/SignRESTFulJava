@@ -10,6 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.sun.istack.NotNull;
 
 @Entity
 public class Usuario {
@@ -17,8 +22,11 @@ public class Usuario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotNull @NotEmpty @Length(min = 3)
 	private String nome;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String email;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String senha;
 	private LocalDateTime dataCriacao = LocalDateTime.now();
 	private LocalDateTime dataAtualizacao;

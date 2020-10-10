@@ -5,6 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.sun.istack.NotNull;
 
 @Entity
 public class Telefone {
@@ -12,7 +17,9 @@ public class Telefone {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id; 
+	@NotNull @NotEmpty @Length(min = 5)
 	private String numero;
+	@NotNull @NotEmpty @Length(min = 2)
 	private String ddd;
 	@ManyToOne
 	private Usuario usuario;
