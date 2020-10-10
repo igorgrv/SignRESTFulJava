@@ -1,4 +1,4 @@
-package com.accenture.signinup.config;
+package com.accenture.signinup.config.validation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
