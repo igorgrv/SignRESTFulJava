@@ -3,6 +3,7 @@
 Neste projeto foi utilizado:
 
 * Spring Boot;
+* Spring Security;
 * JJWT;
 * MongoDB;
 * Swagger;
@@ -17,11 +18,13 @@ https://signinup-java-rest.herokuapp.com/swagger-ui.html
 
 ## Getting Started
 
+URL Base: `https://signinup-java-rest.herokuapp.com/`;<br>
+
 Os métodos **públicos**, são:
 
 * `/health` -> [**GET**] Mensagem para demonstrar o status da aplicação;
 
-* `/signup` -> [**POST**] A partir de um body  (exemplo abaixo), poderá ser salvo um usuário;
+* `/signup` -> [**POST**] A partir de um body (exemplo abaixo), poderá ser salvo um usuário;
 
   ```json
   {

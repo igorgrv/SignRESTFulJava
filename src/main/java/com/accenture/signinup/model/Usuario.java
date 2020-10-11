@@ -122,7 +122,7 @@ public class Usuario implements UserDetails {
 		long minutos = ultimoLogin.until(LocalDateTime.now(), ChronoUnit.MINUTES);
 		return minutos < 30;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", dataCriacao="

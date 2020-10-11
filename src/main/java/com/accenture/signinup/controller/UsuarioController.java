@@ -27,6 +27,7 @@ import com.accenture.signinup.controller.dto.UsuarioDTO;
 import com.accenture.signinup.controller.form.UsuarioForm;
 import com.accenture.signinup.model.Usuario;
 import com.accenture.signinup.repository.UsuarioRepository;
+import com.accenture.signinup.service.impl.UsuarioServiceImpl;
 
 @RestController
 public class UsuarioController {
@@ -36,6 +37,9 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private UsuarioServiceImpl usuarioService;
 
 	@GetMapping("/health")
 	public String health() {
@@ -43,13 +47,13 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/usuarios")
-	public List<UsuarioDTO> list() {
-		return UsuarioDTO.toUsuario(usuarioRepository.findAll());
+	public List<UsuarioDTO> getUsuarios() {
+		return usuarioService.getUsuarios();
 	}
 
 	@GetMapping("/usuarios/{id}")
 	public ResponseEntity<Object> getUsuario(@PathVariable String id) {
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		Optional<Usuario> usuario = usuarioService.getUsuario(id);
 		if (usuario.isPresent()) {
 			if (!usuario.get().tokenPassouTrintaMinutos()) {
 				return new ResponseEntity<>("Sessão Invalida", HttpStatus.BAD_REQUEST);
@@ -63,7 +67,7 @@ public class UsuarioController {
 	@Transactional
 	public ResponseEntity<Object> signup(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriBuilder) {
 
-		Optional<Usuario> usuarioEmail = usuarioRepository.findByEmail(usuario.getEmail());
+		Optional<Usuario> usuarioEmail = usuarioService.getUsuarioByEmail(usuario);
 		if (usuarioEmail.isPresent()) {
 			ErrorDTO errorDTO = new ErrorDTO();
 			errorDTO.setMensagem("E-mail já existente");
@@ -74,7 +78,7 @@ public class UsuarioController {
 		usuario.setSenha(senhaEncoded);
 		usuario.setDataCriacao(LocalDateTime.now());
 		usuario.setDataUltimoLogin(LocalDateTime.now());
-		usuarioRepository.save(usuario);
+		usuarioService.insertUsuario(usuario);
 
 		URI uri = uriBuilder.path("/signup/{id}").buildAndExpand(usuario.getId()).toUri();
 		return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));

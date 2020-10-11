@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.accenture.signinup.repository.UsuarioRepository;
 import com.accenture.signinup.service.TokenService;
-import com.accenture.signinup.service.UsuarioServiceImpl;
+import com.accenture.signinup.service.impl.UsuarioServiceImpl;
 
 @EnableWebSecurity
 @Configuration
