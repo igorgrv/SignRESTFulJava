@@ -49,4 +49,9 @@ public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
 		usuarioRepository.save(usuario);
 	}
 
+	@Override
+	public Optional<Usuario> findUsuarioForm(String email) {
+		return usuarioRepository.findByEmail(email);
+	}
+
 }

@@ -12,4 +12,5 @@ public interface UsuarioService {
 	Optional<Usuario> getUsuario(String id);
 	Optional<Usuario> getUsuarioByEmail(Usuario usuario);
 	void insertUsuario(Usuario usuario);
+	Optional<Usuario> findUsuarioForm(String email);
 }

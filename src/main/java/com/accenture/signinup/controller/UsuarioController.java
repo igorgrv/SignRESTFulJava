@@ -26,7 +26,6 @@ import com.accenture.signinup.controller.dto.ErrorDTO;
 import com.accenture.signinup.controller.dto.UsuarioDTO;
 import com.accenture.signinup.controller.form.UsuarioForm;
 import com.accenture.signinup.model.Usuario;
-import com.accenture.signinup.repository.UsuarioRepository;
 import com.accenture.signinup.service.impl.UsuarioServiceImpl;
 
 @RestController
@@ -34,9 +33,6 @@ public class UsuarioController {
 
 	@Autowired
 	private AuthenticationManager authManager;
-
-	@Autowired
-	private UsuarioRepository usuarioRepository;
 	
 	@Autowired
 	private UsuarioServiceImpl usuarioService;
@@ -92,7 +88,7 @@ public class UsuarioController {
 
 		try {
 			authManager.authenticate(login);
-			Optional<Usuario> usuario = usuarioRepository.findByEmail(form.getEmail());
+			Optional<Usuario> usuario = usuarioService.findUsuarioForm(form.getEmail());
 			if (usuario.isPresent()) {
 				usuario.get().setDataUltimoLogin(LocalDateTime.now());
 				return ResponseEntity.ok(new UsuarioDTO(usuario.get()));
